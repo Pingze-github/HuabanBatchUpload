@@ -16,7 +16,16 @@ def setCookies(cookies_str):
     global cookies
     cookies = {"cookies_are":cookies_str}
 
-def upload(filepath, board_title, pinname=None):
+def printWithLock(string,lock):
+    # print with lock control
+    if lock!=None and str(type(lock))=="<type 'thread.lock'>":
+        lock.require()
+        print(string)
+        lock.release()
+    else:
+        print(string)
+
+def upload(filepath, board_title, pinname=None, lock=None):
     # upload single file
     if (type(board_title)!=unicode):
         board_title = unicode(board_title,"u8")
@@ -29,6 +38,7 @@ def upload(filepath, board_title, pinname=None):
         ,'Content-Disposition: form-data; name="upload1"; filename="'+filename+'" Content-Type: image/jpeg':image
     }
     res = requests.post(url, files=files, cookies=cookies, headers=headers) # 上传图片到花瓣服务器
+    printWithLock(res.text, lock)
     file_data = json_parse(res.text)
     file_id = file_data["id"]
     user = getUser()
@@ -38,7 +48,7 @@ def upload(filepath, board_title, pinname=None):
     if board_title in board_titles:
         board_id = user["boards"][board_titles.index(board_title)]["board_id"]
     else:
-        print(u'Upload Failed: board name "{}" invalid'.format(board_title))
+        printWithLock(u'Upload Failed: board name "{}" invalid'.format(board_title),lock)
         return
     data = {
         "board_id":board_id
@@ -51,12 +61,12 @@ def upload(filepath, board_title, pinname=None):
     url = "http://huaban.com/pins/"
     res = requests.post(url, data=data, cookies=cookies, headers=headers) # 添加图片文件到画板
     if('<i class="error">' in res.text):
-        print(u'Upload Failed: "{}" has been cellected for more than 5 times'.format(filename));
+        printWithLock(u'Upload Failed: "{}" has been cellected for more than 5 times'.format(filename), lock);
     elif json_parse(res.text)!=None:
         data = json_parse(res.text)
-        print (u'Upload Success: file "{}" to board "{}"'.format(filename,board_title));
+        printWithLock (u'Upload Success: file "{}" to board "{}"'.format(filename,board_title), lock);
     else:
-        print(u'Upload Failed: "{}", for unknown reason'.format(filename));
+        printWithLock(u'Upload Failed: "{}", for unknown reason'.format(filename), lock);
 
 
 def getUser():
@@ -65,17 +75,21 @@ def getUser():
     if type(user)==dict:
         return user
     url = "http://huaban.com/"
+    print cookies
     res = get(url, cookies=cookies, headers=headers) # 获取主页
     req_json = ssearch('app\["req"\] = ({.+?});',res.text)
     print ("Successfully load user main page data")
     udata = {}
     if req_json:
         req = json_parse(req_json)
+        if req["user"]=="null":
+            print ("Cookies invalid, login failed")
+            exit()
         req_user = req["user"]
         url = url+req_user["urlname"]
         res = get(url, cookies=cookies, headers=headers) # 获取画板页
         user_json = ssearch('app.page\["user"\] = ({.+?});',res.text)
-        print ("Successfully load user board page data")
+        print("Successfully load user board page data")
         if user_json:
             user = json_parse(user_json)
             return user

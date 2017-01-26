@@ -7,6 +7,7 @@ import os
 import requests
 import json
 import re
+from Queue import Queue
 
 def getDirectFiles(path):
     # get direct files in certain dir
@@ -31,9 +32,17 @@ def ssearch(pattern,text):
         i=i+1
     return result
 
+def list2queue(alist):
+    # turn list to queue
+    queue = Queue()
+    for ele in alist:
+        queue.put(ele)
+    return queue
+
 def json_parse(string):
     # a better json parser
     string = re.sub('undefined','"undefined"',string) #json库不能识别undefined类型
+    string = re.sub('null','"null"',string) #json库不能识别null类型
     try:
         data = json.loads(string)
         return data 
