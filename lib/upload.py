@@ -19,7 +19,7 @@ def setCookies(cookies_str):
 def printWithLock(string,lock):
     # print with lock control
     if lock!=None and str(type(lock))=="<type 'thread.lock'>":
-        lock.require()
+        lock.acquire()
         print(string)
         lock.release()
     else:
@@ -37,8 +37,7 @@ def upload(filepath, board_title, pinname=None, lock=None):
         'Content-Disposition: form-data; name="title"':''
         ,'Content-Disposition: form-data; name="upload1"; filename="'+filename+'" Content-Type: image/jpeg':image
     }
-    res = requests.post(url, files=files, cookies=cookies, headers=headers) # 上传图片到花瓣服务器
-    printWithLock(res.text, lock)
+    res = post(url, files=files, cookies=cookies, headers=headers) # 上传图片到花瓣服务器
     file_data = json_parse(res.text)
     file_id = file_data["id"]
     user = getUser()
@@ -59,14 +58,14 @@ def upload(filepath, board_title, pinname=None, lock=None):
         ,"share_button":0
     }
     url = "http://huaban.com/pins/"
-    res = requests.post(url, data=data, cookies=cookies, headers=headers) # 添加图片文件到画板
+    res = post(url, data=data, cookies=cookies, headers=headers) # 添加图片文件到画板
     if('<i class="error">' in res.text):
-        printWithLock(u'Upload Failed: "{}" has been cellected for more than 5 times'.format(filename), lock);
+        printWithLock(u'Upload Failed: file "{}" has been collected for more than 5 times'.format(filename), lock);
     elif json_parse(res.text)!=None:
         data = json_parse(res.text)
         printWithLock (u'Upload Success: file "{}" to board "{}"'.format(filename,board_title), lock);
     else:
-        printWithLock(u'Upload Failed: "{}", for unknown reason'.format(filename), lock);
+        printWithLock(u'Upload Failed: file "{}", for unknown reason'.format(filename), lock);
 
 
 def getUser():
@@ -75,7 +74,6 @@ def getUser():
     if type(user)==dict:
         return user
     url = "http://huaban.com/"
-    print cookies
     res = get(url, cookies=cookies, headers=headers) # 获取主页
     req_json = ssearch('app\["req"\] = ({.+?});',res.text)
     print ("Successfully load user main page data")

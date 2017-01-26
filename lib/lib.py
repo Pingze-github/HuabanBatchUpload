@@ -70,7 +70,7 @@ def post(url,data="",files="",cookies="",headers="",timeout=3,max_try=5):
             return res
         except:
             max_try = max_try - 1
-            print("HTTP/GET failed, Now retry ...")
+            print("HTTP/POST failed, Now retry ...")
             continue
     return requests.post(url, data=data, files=files, cookies=cookies, headers=headers)
     return res
