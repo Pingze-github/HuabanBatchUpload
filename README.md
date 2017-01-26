@@ -1,13 +1,12 @@
 # HuabanBatchUpload
 花瓣网图片批量上传工具
 
+## 前置库
+[requests](https://github.com/kennethreitz/requests/)
+
 ## 使用
-0. 确保安装了requests库。
-1. 编辑index.py。
-2. 将账号密码填入index.py
-3. 将图片所在文件夹路径填入index.py
-4. 将指定画板名填入index.py
-5. 运行index.py
+1. 编辑main.py。将账号/密码/图片文件夹/画板名填入。
+5. 运行main.py
 
 ## 已实现
 + 上传文件（Python）
