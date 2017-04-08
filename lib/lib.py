@@ -12,11 +12,15 @@ from Queue import Queue
 def getDirectFiles(path):
     # get direct files in certain dir
     file_list = []
-    if (os.path.exists(path) and os.path.isdir(path)):
+    if os.path.exists(path) and os.path.isdir(path):
         for root, dirs, files in os.walk(path):
             break
         for filename in files:
             file_list.append(root+'/'+filename)
+        print("Find {} images to be uploaded ...".format(len(file_list)))
+    else:
+        print("Path invalid")
+        exit()
     return file_list
 
 def ssearch(pattern,text):

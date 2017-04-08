@@ -5,7 +5,7 @@
 
 import os
 from lib import *
-
+import time
 
 # global variable
 cookies = {}
@@ -25,7 +25,7 @@ def printWithLock(string,lock):
     else:
         print(string)
 
-def upload(filepath, board_title, pinname=None, lock=None):
+def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     # upload single file
     if (type(board_title)!=unicode):
         board_title = unicode(board_title,"u8")
@@ -63,7 +63,7 @@ def upload(filepath, board_title, pinname=None, lock=None):
         printWithLock(u'Upload Failed: file "{}" has been collected for more than 5 times'.format(filename), lock);
     elif json_parse(res.text)!=None:
         data = json_parse(res.text)
-        printWithLock (u'Upload Success: file "{}" to board "{}"'.format(filename,board_title), lock);
+        printWithLock (u'[{}][{}] Upload Success: file "{}" to board "{}"'.format(time.asctime()[11:19],tname,filename,board_title), lock);
     else:
         printWithLock(u'Upload Failed: file "{}", for unknown reason'.format(filename), lock);
 

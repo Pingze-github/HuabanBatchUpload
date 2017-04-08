@@ -29,16 +29,20 @@ def uploadOne(tname,lock,args):
         if file_queue.empty() == True:
             break
         file_path = file_queue.get()
-        upload(file_path,board_name,lock=lock)
+        upload(file_path,board_name,lock=lock,tname=tname)
     lock.acquire()
     print('[%s][%s] Thread exit !' % (time.asctime()[11:19], tname))
     lock.release()
 
 def batchUpload(cookies_str,dirpath,board_name):
+    print("Program start")
+    file_list = getDirectFiles(dirpath)
     setCookies(cookies_str)
     getUser()
-    file_list = getDirectFiles(dirpath)
-    thread_num = 10
+    if len(file_list) > 10:
+        thread_num = 10
+    else:
+        thread_num = len(file_list)
     file_queue = list2queue(file_list)
     lock = threading.Lock()
     thread_list = []
