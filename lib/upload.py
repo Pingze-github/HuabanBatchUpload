@@ -39,6 +39,10 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     }
     res = post(url, files=files, cookies=cookies, headers=headers) # 上传图片到花瓣服务器
     file_data = json_parse(res.text)
+    if not file_data:
+        printWithLock(u'Upload Failed: upload file "{}" not return "id"'.format(filename), lock)
+        printWithLock(u'It returns "{}" '.format(res.text), lock)
+        return
     file_id = file_data["id"]
     user = getUser()
     board_titles = []

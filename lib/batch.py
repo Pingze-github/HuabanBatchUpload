@@ -34,10 +34,10 @@ def uploadOne(tname,lock,args):
     print('[%s][%s] Thread exit !' % (time.asctime()[11:19], tname))
     lock.release()
 
-def batchUpload(cookies_str,dirpath,board_name):
-    print("Program start")
+def batchUpload(cookie,dirpath,board_name):
+    dirpath = unicode(dirpath)
     file_list = getDirectFiles(dirpath)
-    setCookies(cookies_str)
+    setCookies(cookie)
     getUser()
     if len(file_list) > 10:
         thread_num = 10
