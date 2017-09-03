@@ -5,8 +5,9 @@
 [requests](https://github.com/kennethreitz/requests/)
 
 ## 使用
-1. 编辑main.py。将账号/密码/图片文件夹/画板名填入。
-5. 运行main.py
+0. 安装python，并```pip install request```安装必备库。
+1. 命令行执行```python main.py 账号 密码 图片目录 画板```。
+* 画板可以不填，默认取图片目录名
 
 ## 已实现
 + 上传文件（Python）
