@@ -18,4 +18,13 @@
 + 并发控制
 + 特殊字符路径支持
 
+## 有的同学不会装python
+
+1. 去Python官网下载Python2.xxxx。
+
+2. 安装Python。
+
+3. Win+R打开运行，输入cmd回车，打开命令提示符，输入python和pip两个指令，看看是否能正常运行。若不能，百度“Python环境配置”。
+
+4. 在命令提示符中运行 pip install requests。
 
