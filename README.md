@@ -1,6 +1,10 @@
 # HuabanBatchUpload
 花瓣网图片批量上传工具
 
+#### 由于花瓣网登录改用https加密，已经不能直接用账密登录！如果要用，请改写cookie！
+
+-----------------------------------------------------------
+
 ## 前置库
 [requests](https://github.com/kennethreitz/requests/)
 
