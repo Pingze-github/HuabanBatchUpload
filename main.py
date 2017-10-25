@@ -9,6 +9,10 @@ from lib.batch import batchUpload
 from lib.auth import getCookie
 from lib.auth import testCookie
 
+# TODO cookie使用json储存。可以保存多个cookie。根据账号读取cookie
+# TODO 例外状况测试
+# 账号不存在、账密错误、文件包含非图片
+
 def main():
     account = "" # 账户名
     password = "" # 密码

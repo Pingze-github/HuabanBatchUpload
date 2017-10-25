@@ -2,6 +2,4 @@
 /cookie.bk
 *.pyc
 /build/
-/dist/
-!/dist/main.exe
 /.idea/

@@ -1,21 +1,9 @@
 # HuabanBatchUpload
 花瓣网图片批量上传工具
 
-## 前置库
-[requests](https://github.com/kennethreitz/requests/)
-
 ## 使用
-0. 安装python，并 ```pip install requests``` 安装必备库。
-1. 命令行执行 ```python main.py 账号 密码 图片文件目录 画板名```。
+1. 下载代码到本地
+2. 在dist目录中打开命令窗口
+3. 执行命令：```main.exe 账号 密码 图片目录路径 画板名```
 
-
-## 有的同学不会装python
-
-1. 去Python官网下载 Python2。
-
-2. 安装Python。
-
-3. Win+R打开运行，输入cmd回车，打开命令提示符，输入python和pip两个指令，看看是否能正常运行。若不能，百度“Python环境配置”。
-
-4. 在命令提示符中运行 ```pip install requests```。
 

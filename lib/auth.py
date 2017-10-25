@@ -4,7 +4,7 @@
 # author: Pingze-github @ Github
 
 from lib import *
-import requests
+import os
 
 def getCookie(account,password):
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
@@ -15,7 +15,11 @@ def getCookie(account,password):
         ,"_ref":"frame"
     }
     import requests
-    res = requests.post(url,data=data,headers=headers,verify=True)
+    # 查看有无cacert证书
+    verify = './cacert.pem'
+    if not os.path.exists(verify) or not os.path.isfile(verify) :
+        verify = True
+    res = requests.post(url, data = data, headers = headers, verify = verify)
     if u'{"error":["用户不存在"]}' in res.text:
         print(u'登录失败，请检查账密')
         exit()
@@ -31,7 +35,6 @@ def getCookie(account,password):
         print(res.text)
         cookies = ''
 
-    print(cookies)
     return cookies
 
 def testCookie(cookie) :
