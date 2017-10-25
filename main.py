@@ -7,7 +7,7 @@ import sys
 import os
 from lib.batch import batchUpload
 from lib.auth import getCookie
-from lib.auth import test
+from lib.auth import testCookie
 
 def main():
     account = "" # 账户名
@@ -24,28 +24,36 @@ def main():
     if len(sys.argv) >= 5:
         boardName = sys.argv[4]
     if not account or not password:
-        print('invalid account or password!')
+        print(u'未设定账密')
         return
     if not dirpath or not (os.path.exists(dirpath) and os.path.isdir(dirpath)):
-        print('invalid dirpath!')
+        print(u'未设定图片目录路径或路径无效')
         return
     dirpath = os.path.normpath(dirpath)
     if not boardName:
-        boardName = dirpath[dirpath.rfind('\\') + 1:]  # 默认取文件夹名
-    print('Your options: account: {}, password: {}, dirpath: {}, boardName: {}'.format(account, password, dirpath, boardName))
+        print(u'未设定画板名')
+        return
+        # boardName = dirpath[dirpath.rfind('\\') + 1:]  # 默认取文件夹名
+    print(u'你的设置: 账号: {}, 密码: {}, 图片目录路径: {}, 画板名: {}'.format(account, password, dirpath, boardName))
     cookie = ''
     if os.path.exists('./cookie.bk') and os.path.isfile('./cookie.bk'):
         with open('./cookie.bk', 'r') as f:
             cookie = f.read()
-            if (test(cookie)):
-                print('Using stored cookie ...')
+            testResult = testCookie(cookie);
+            if (testResult):
+                print(u'验证缓存Cookie成功，用户名为 ' + testResult["username"])
             else:
                 cookie = ''
+
     if not cookie:
+        print(u'缓存Cookie不存在或验证失败，使用账密登录...')
         cookie= getCookie(account,password)
-        print('Created new cookie ...')
+        print(u'账密登录成功，获取到Cookie:')
+        print(cookie)
         with open('./cookie.bk', 'w') as file:
             file.write(cookie)
+            print(u'缓存Cookie成功')
+
     batchUpload(cookie, dirpath, boardName)
 
 if __name__ == '__main__':

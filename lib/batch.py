@@ -23,7 +23,7 @@ class MThread(threading.Thread):
 def uploadOne(tname,lock,args):
     (file_queue,board_name)=args
     lock.acquire()
-    print('[%s][%s] Thread start !' % (time.asctime()[11:19], tname))
+    # print('[%s][%s] Thread start !' % (time.asctime()[11:19], tname))
     lock.release()
     while True:
         if file_queue.empty() == True:
@@ -31,7 +31,7 @@ def uploadOne(tname,lock,args):
         file_path = file_queue.get()
         upload(file_path,board_name,lock=lock,tname=tname)
     lock.acquire()
-    print('[%s][%s] Thread exit !' % (time.asctime()[11:19], tname))
+    # print('[%s][%s] Thread exit !' % (time.asctime()[11:19], tname))
     lock.release()
 
 def batchUpload(cookie,dirpath,board_name):
@@ -52,4 +52,4 @@ def batchUpload(cookie,dirpath,board_name):
         thread.start()
     for thread in thread_list:
         thread.join()
-    print('All files uploaded !')
+    print(u'全部图片上传完毕!')

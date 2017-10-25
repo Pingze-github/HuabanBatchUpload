@@ -40,8 +40,8 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     res = post(url, files=files, cookies=cookies, headers=headers) # 上传图片到花瓣服务器
     file_data = json_parse(res.text)
     if not file_data:
-        printWithLock(u'Upload Failed: upload file "{}" not return "id"'.format(filename), lock)
-        printWithLock(u'It returns "{}" '.format(res.text), lock)
+        printWithLock(u'[{}] 上传失败: "{}" 上传请求未返回id'.format(time.asctime()[11:19], filename), lock)
+        printWithLock(u'返回了 "{}" '.format(res.text), lock)
         return
     file_id = file_data["id"]
     user = getUser()
@@ -51,7 +51,7 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     if board_title in board_titles:
         board_id = user["boards"][board_titles.index(board_title)]["board_id"]
     else:
-        printWithLock(u'Upload Failed: board name "{}" invalid'.format(board_title),lock)
+        printWithLock(u'[{}] 上传失败: 画板名 "{}" 不存在，请先建立画板'.format(time.asctime()[11:19], board_title),lock)
         return
     data = {
         "board_id":board_id
@@ -64,13 +64,12 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     url = "http://huaban.com/pins/"
     res = post(url, data=data, cookies=cookies, headers=headers) # 添加图片文件到画板
     if('<i class="error">' in res.text):
-        printWithLock(u'Upload Failed: file "{}" has been collected for more than 5 times'.format(filename), lock);
+        printWithLock(u'[{}] 上传失败: 图片 "{}" 已经被采集超过5次'.format(time.asctime()[11:19], filename), lock);
     elif json_parse(res.text)!=None:
         data = json_parse(res.text)
-        printWithLock (u'[{}][{}] Upload Success: file "{}" to board "{}"'.format(time.asctime()[11:19],tname,filename,board_title), lock);
+        printWithLock (u'[{}] 上传成功: 图片 "{}" 到画板 "{}"'.format(time.asctime()[11:19], filename, board_title), lock);
     else:
-        printWithLock(u'Upload Failed: file "{}", for unknown reason'.format(filename), lock);
-
+        printWithLock(u'[{}] 上传失败: 图片 "{}", 原因不明'.format(time.asctime()[11:19], filename), lock);
 
 def getUser():
     # get user data
@@ -80,7 +79,7 @@ def getUser():
     url = "http://huaban.com/"
     res = get(url, cookies=cookies, headers=headers) # 获取主页
     req_json = ssearch('app\["req"\] = ({.+?});',res.text)
-    print ("Successfully load user main page data")
+    print (u"成功读取用户主页信息")
     udata = {}
     if req_json:
         req = json_parse(req_json)
@@ -91,7 +90,7 @@ def getUser():
         url = url+req_user["urlname"]
         res = get(url, cookies=cookies, headers=headers) # 获取画板页
         user_json = ssearch('app.page\["user"\] = ({.+?});',res.text)
-        print("Successfully load user board page data")
+        print(u"成功读取用户画板信息")
         if user_json:
             user = json_parse(user_json)
             return user

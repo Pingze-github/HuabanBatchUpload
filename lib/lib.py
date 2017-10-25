@@ -17,9 +17,9 @@ def getDirectFiles(path):
             break
         for filename in files:
             file_list.append(root+'/'+filename)
-        print("Find {} images to be uploaded ...".format(len(file_list)))
+        print(u"发现 {} 张图片等待上传...".format(len(file_list)))
     else:
-        print("Path invalid")
+        print(u"图片目录路径无效")
         exit()
     return file_list
 
@@ -78,3 +78,6 @@ def post(url,data="",files="",cookies="",headers="",timeout=3,max_try=5):
             continue
     return requests.post(url, data=data, files=files, cookies=cookies, headers=headers)
     return res
+
+def getHeaders():
+    return {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}

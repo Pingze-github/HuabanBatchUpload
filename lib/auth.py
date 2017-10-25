@@ -17,22 +17,33 @@ def getCookie(account,password):
     import requests
     res = requests.post(url,data=data,headers=headers,verify=True)
     if u'{"error":["用户不存在"]}' in res.text:
-        print('Login in failed, check account/password')
+        print(u'登录失败，请检查账密')
+        exit()
+    if u'登录频率过快' in res.text:
+        print(u'登录频率过快，登录被阻断。请在浏览器中登录一次后再尝试')
         exit()
     if 'Set-Cookie' in res.headers:
         cookies = res.headers['Set-Cookie']
     elif 'set-cookie' in res.headers:
         cookies = res.headers['set-cookie']
     else:
-        print('Cannot get cookies，try to run without cookies!')
-        cookies = None
+        print(u'登录失败，未知原因')
+        print(res.text)
+        cookies = ''
+
+    print(cookies)
     return cookies
 
-# TODO 完成cookie测试功能
-def test(cookie) :
-    pass
+def testCookie(cookie) :
+    url = "http://huaban.com/"
+    res = get(url, cookies = {"cookies_are": cookie}, headers = getHeaders()) # 获取主页
+    if 'app.page["user_info"]' in res.text :
+        username = ssearch('"username":"(.+?)"', res.text)
+        return {"username": username}
+    else:
+        return False
 
 if __name__ == '__main__':
-    account = "18200164037" 
+    account = "" 
     password = ""
     getCookie(account,password)

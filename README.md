@@ -5,8 +5,8 @@
 [requests](https://github.com/kennethreitz/requests/)
 
 ## 使用
-0. 安装python，并```pip install request```安装必备库。
-1. 命令行执行```python main.py 账号 密码 图片目录 画板```。
+0. 安装python，并 ```pip install requests``` 安装必备库。
+1. 命令行执行 ```python main.py 账号 密码 图片文件目录 画板名```。
 * 画板可以不填，默认取图片目录名
 
 ## 已实现
