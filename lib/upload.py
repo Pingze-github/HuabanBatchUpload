@@ -71,6 +71,7 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     else:
         printWithLock(u'[{}] 上传失败: 图片 "{}", 原因不明'.format(time.asctime()[11:19], filename), lock);
 
+
 def getUser():
     # get user data
     global user
@@ -79,18 +80,18 @@ def getUser():
     url = "http://huaban.com/"
     res = get(url, cookies=cookies, headers=headers) # 获取主页
     req_json = ssearch('app\["req"\] = ({.+?});',res.text)
-    print (u"成功读取用户主页信息")
-    udata = {}
+
+    # print (u"成功读取用户主页信息")
     if req_json:
         req = json_parse(req_json)
         if req["user"]=="null":
-            print ("Cookies invalid, login failed")
+            print(u"未成功获取用户主页信息")
             exit()
         req_user = req["user"]
         url = url+req_user["urlname"]
         res = get(url, cookies=cookies, headers=headers) # 获取画板页
         user_json = ssearch('app.page\["user"\] = ({.+?});',res.text)
-        print(u"成功读取用户画板信息")
+        # print(u"成功读取用户画板信息")
         if user_json:
             user = json_parse(user_json)
             return user

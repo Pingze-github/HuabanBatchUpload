@@ -21,11 +21,14 @@ def getCookie(account,password):
         verify = True
     res = requests.post(url, data = data, headers = headers, verify = verify)
     if u'{"error":["用户不存在"]}' in res.text:
-        print(u'登录失败，请检查账密')
-        exit()
+        print(u'登录失败，账号不存在')
+        return
+    if u'{"error":["用户密码错误"]}' in res.text:
+        print(u'登录失败，密码错误')
+        return
     if u'登录频率过快' in res.text:
         print(u'登录频率过快，登录被阻断。请在浏览器中登录一次后再尝试')
-        exit()
+        return
     if 'Set-Cookie' in res.headers:
         cookies = res.headers['Set-Cookie']
     elif 'set-cookie' in res.headers:

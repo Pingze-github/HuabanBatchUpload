@@ -1,5 +1,5 @@
 /huaban/
-/cookie.bk
+/cookie.json
 *.pyc
 /build/
 /.idea/

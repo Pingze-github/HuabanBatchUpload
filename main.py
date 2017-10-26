@@ -8,10 +8,9 @@ import os
 from lib.batch import batchUpload
 from lib.auth import getCookie
 from lib.auth import testCookie
+from lib.lib import json_parse, json_stringify
 
-# TODO cookie使用json储存。可以保存多个cookie。根据账号读取cookie
-# TODO 例外状况测试
-# 账号不存在、账密错误、文件包含非图片
+# TODO 处理图片来避免因过多采集而上传失败
 
 def main():
     account = "" # 账户名
@@ -30,8 +29,11 @@ def main():
     if not account or not password:
         print(u'未设定账密')
         return
-    if not dirpath or not (os.path.exists(dirpath) and os.path.isdir(dirpath)):
-        print(u'未设定图片目录路径或路径无效')
+    if not dirpath:
+        print(u'未设定图片目录路径')
+        return
+    if not (os.path.exists(dirpath) and os.path.isdir(dirpath)):
+        print(u'设定图片目录路径'+ dirpath + u'无效')
         return
     dirpath = os.path.normpath(dirpath)
     if not boardName:
@@ -39,23 +41,33 @@ def main():
         return
         # boardName = dirpath[dirpath.rfind('\\') + 1:]  # 默认取文件夹名
     print(u'你的设置: 账号: {}, 密码: {}, 图片目录路径: {}, 画板名: {}'.format(account, password, dirpath, boardName))
-    cookie = ''
-    if os.path.exists('./cookie.bk') and os.path.isfile('./cookie.bk'):
-        with open('./cookie.bk', 'r') as f:
-            cookie = f.read()
-            testResult = testCookie(cookie);
-            if (testResult):
-                print(u'验证缓存Cookie成功，用户名为 ' + testResult["username"])
+    cookie = None
+    cookieJsonPath = './cookie.json'
+    if os.path.exists(cookieJsonPath) and os.path.isfile(cookieJsonPath):
+        with open(cookieJsonPath, 'r') as f:
+            cookieMap = json_parse(f.read())
+            if not cookieMap or not cookieMap[account] :
+                print(u'未找到缓存Cookie')
             else:
-                cookie = ''
+                cookie = cookieMap[account]
+                testResult = testCookie(cookie)
+                if (testResult):
+                    print(u'验证缓存Cookie成功，用户名为 ' + testResult["username"])
+                else:
+                    print(u'验证缓存Cookie失败')
 
     if not cookie:
-        print(u'缓存Cookie不存在或验证失败，使用账密登录...')
-        cookie= getCookie(account,password)
+        print(u'使用账密登录...')
+        cookie = getCookie(account,password)
+        if not cookie:
+            return
         print(u'账密登录成功，获取到Cookie:')
-        print(cookie)
-        with open('./cookie.bk', 'w') as file:
-            file.write(cookie)
+        with open(cookieJsonPath, 'w+') as file:
+            cookieMap = json_parse(file.read())
+            if not cookieMap:
+                cookieMap = {}
+            cookieMap[account] = cookie
+            file.write(json_stringify(cookieMap))
             print(u'缓存Cookie成功')
 
     batchUpload(cookie, dirpath, boardName)

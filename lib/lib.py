@@ -13,10 +13,18 @@ def getDirectFiles(path):
     # get direct files in certain dir
     file_list = []
     if os.path.exists(path) and os.path.isdir(path):
+        root = ""
+        files = []
         for root, dirs, files in os.walk(path):
+            root = root
+            files = files
             break
         for filename in files:
-            file_list.append(root+'/'+filename)
+            ext = os.path.splitext(filename)
+            if not ext[1] or not ext[1][1:] in ['jpg','png','bmp','jpeg','gif']:
+                print(u'不支持的文件格式 ' + filename + u' 跳过...')
+                continue
+            file_list.append(root + '/' + filename)
         print(u"发现 {} 张图片等待上传...".format(len(file_list)))
     else:
         print(u"图片目录路径无效")
@@ -50,6 +58,13 @@ def json_parse(string):
     try:
         data = json.loads(string)
         return data 
+    except ValueError:
+        return None
+
+def json_stringify(obj):
+    try:
+        string = json.dumps(obj)
+        return string
     except ValueError:
         return None
 

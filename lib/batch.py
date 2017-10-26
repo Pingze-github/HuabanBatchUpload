@@ -36,9 +36,15 @@ def uploadOne(tname,lock,args):
 
 def batchUpload(cookie,dirpath,board_name):
     dirpath = unicode(dirpath)
-    file_list = getDirectFiles(dirpath)
     setCookies(cookie)
-    getUser()
+    user = getUser()
+    board_titles = []
+    for dic in user["boards"]:
+        board_titles.append(dic["title"])
+    if not board_name in board_titles:
+        print(u'指定画板 ' + board_name + u' 不存在')
+        return
+    file_list = getDirectFiles(dirpath)
     if len(file_list) > 10:
         thread_num = 10
     else:
