@@ -3,9 +3,9 @@
 # project: HuabanBatchUpload
 # author: Pingze-github @ Github
 
-import os
-from lib import *
 import time
+from lib import *
+import recreateImg
 
 # global variable
 cookies = {}
@@ -64,7 +64,9 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     url = "http://huaban.com/pins/"
     res = post(url, data=data, cookies=cookies, headers=headers) # 添加图片文件到画板
     if('<i class="error">' in res.text):
-        printWithLock(u'[{}] 上传失败: 图片 "{}" 已经被采集超过5次'.format(time.asctime()[11:19], filename), lock);
+        printWithLock(u'[{}] 上传失败: 图片 "{}" 已经被采集超过5次，准备处理图片后重试...'.format(time.asctime()[11:19], filename), lock);
+        recreateImg.recreate(filepath)
+        upload(filepath, board_title, pinname, lock, tname)
     elif json_parse(res.text)!=None:
         data = json_parse(res.text)
         printWithLock (u'[{}] 上传成功: 图片 "{}" 到画板 "{}"'.format(time.asctime()[11:19], filename, board_title), lock);

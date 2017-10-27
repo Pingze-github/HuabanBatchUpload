@@ -8,16 +8,17 @@ import os
 from lib.batch import batchUpload
 from lib.auth import getCookie
 from lib.auth import testCookie
-from lib.lib import json_parse, json_stringify
+from lib.lib import json_parse, json_stringify, decode
 import lib.inputPre as inputPre
+
 
 # TODO 处理图片来避免因过多采集而上传失败
 
 def main():
     account = '' # 账户名
     password = '' # 密码
-    dirpath = '' # 要上传的图片所在目录
     boardName = '' # 要上传到的画板名
+    dirpath = '' # 要上传的图片所在目录
     if len(sys.argv) < 2:
         paramMap = inputPre.get([
             {'key': 'account', 'name': u'账户名'},
@@ -27,8 +28,8 @@ def main():
         ])
         account = paramMap['account']
         password = paramMap['password']
-        dirpath = paramMap['dirpath']
         boardName = paramMap['boardname']
+        dirpath = paramMap['dirpath']
     # 优先接受命令行参数
     if len(sys.argv) >= 2:
         account = sys.argv[1]
@@ -36,8 +37,10 @@ def main():
         password = sys.argv[2]
     if len(sys.argv) >= 4:
         boardName = sys.argv[3]
+        boardName = decode(boardName)
     if len(sys.argv) >= 5:
         dirpath = sys.argv[4]
+        dirpath = decode(dirpath)
     if not account or not password:
         print(u'未设定账密')
         return
