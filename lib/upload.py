@@ -42,7 +42,7 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     if not file_data:
         printWithLock(u'[{}] 上传失败: "{}" 上传请求未返回id'.format(time.asctime()[11:19], filename), lock)
         printWithLock(u'返回了 "{}" '.format(res.text), lock)
-        return
+        return False
     file_id = file_data["id"]
     user = getUser()
     board_titles = []
@@ -52,7 +52,7 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
         board_id = user["boards"][board_titles.index(board_title)]["board_id"]
     else:
         printWithLock(u'[{}] 上传失败: 画板名 "{}" 不存在，请先建立画板'.format(time.asctime()[11:19], board_title),lock)
-        return
+        return False
     data = {
         "board_id":board_id
         ,"text":pinname
@@ -66,12 +66,14 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     if('<i class="error">' in res.text):
         printWithLock(u'[{}] 上传失败: 图片 "{}" 已经被采集超过5次，准备处理图片后重试...'.format(time.asctime()[11:19], filename), lock);
         recreateImg.recreate(filepath)
-        upload(filepath, board_title, pinname, lock, tname)
+        return upload(filepath, board_title, pinname, lock, tname)
     elif json_parse(res.text)!=None:
         data = json_parse(res.text)
         printWithLock (u'[{}] 上传成功: 图片 "{}" 到画板 "{}"'.format(time.asctime()[11:19], filename, board_title), lock);
+        return True
     else:
         printWithLock(u'[{}] 上传失败: 图片 "{}", 原因不明'.format(time.asctime()[11:19], filename), lock);
+        return False
 
 
 def getUser():

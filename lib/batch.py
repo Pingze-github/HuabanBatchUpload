@@ -6,10 +6,12 @@
 from lib import *
 from upload import upload,setCookies,getUser
 import threading
-import time
+
+total = 0
+succeed = 0
+failed = 0
 
 class MThread(threading.Thread):
-    '可传递参数、指定运行函数的线程类'
     def __init__(self,target,tname,lock,args):
         super(MThread,self).__init__()
         self.setDaemon(True)
@@ -20,21 +22,31 @@ class MThread(threading.Thread):
     def run(self):
         self.target(self.tname,self.lock,self.args)
 
+# 一个上传线程
 def uploadOne(tname,lock,args):
+    global succeed, failed
     (file_queue,board_name)=args
-    lock.acquire()
+    # lock.acquire()
     # print('[%s][%s] Thread start !' % (time.asctime()[11:19], tname))
-    lock.release()
+    # lock.release()
     while True:
         if file_queue.empty() == True:
             break
         file_path = file_queue.get()
-        upload(file_path,board_name,lock=lock,tname=tname)
-    lock.acquire()
+        uploadSucceed = upload(file_path,board_name,lock=lock,tname=tname)
+        if uploadSucceed:
+            succeed = 1 + succeed
+        else:
+            failed = 1 + failed
+        lock.acquire()
+        print(u'成功数:{} 失败数:{} 总数:{}'.format(succeed, failed, total))
+        lock.release()
+    # lock.acquire()
     # print('[%s][%s] Thread exit !' % (time.asctime()[11:19], tname))
-    lock.release()
+    # lock.release()
 
 def batchUpload(cookie,dirpath,board_name):
+    global total
     dirpath = unicode(dirpath)
     setCookies(cookie)
     user = getUser()
@@ -46,10 +58,13 @@ def batchUpload(cookie,dirpath,board_name):
         return
     print(u'正在扫描指定目录 ' + dirpath + u'...')
     file_list = getDirectFiles(dirpath)
-    if len(file_list) > 10:
-        thread_num = 10
+    total = len(file_list)
+    maxThreadNum = 50
+    if len(file_list) > maxThreadNum:
+        thread_num = maxThreadNum
     else:
         thread_num = len(file_list)
+    print(u'执行线程数: '+ str(thread_num))
     file_queue = list2queue(file_list)
     lock = threading.Lock()
     thread_list = []
