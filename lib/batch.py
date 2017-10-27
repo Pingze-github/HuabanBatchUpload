@@ -44,6 +44,7 @@ def batchUpload(cookie,dirpath,board_name):
     if not board_name in board_titles:
         print(u'指定画板 ' + board_name + u' 不存在')
         return
+    print(u'正在扫描指定目录 ' + dirpath + u'...')
     file_list = getDirectFiles(dirpath)
     if len(file_list) > 10:
         thread_num = 10

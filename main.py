@@ -9,23 +9,35 @@ from lib.batch import batchUpload
 from lib.auth import getCookie
 from lib.auth import testCookie
 from lib.lib import json_parse, json_stringify
+import lib.inputPre as inputPre
 
 # TODO 处理图片来避免因过多采集而上传失败
 
 def main():
-    account = "" # 账户名
-    password = "" # 密码
-    dirpath = "" # 要上传的图片所在目录
-    boardName = "" # 要上传到的画板名
+    account = '' # 账户名
+    password = '' # 密码
+    dirpath = '' # 要上传的图片所在目录
+    boardName = '' # 要上传到的画板名
+    if len(sys.argv) < 2:
+        paramMap = inputPre.get([
+            {'key': 'account', 'name': u'账户名'},
+            {'key': 'password', 'name': u'账户密码'},
+            {'key': 'boardname', 'name': u'画板名'},
+            {'key': 'dirpath', 'name': u'图片文件目录路径'},
+        ])
+        account = paramMap['account']
+        password = paramMap['password']
+        dirpath = paramMap['dirpath']
+        boardName = paramMap['boardname']
     # 优先接受命令行参数
     if len(sys.argv) >= 2:
         account = sys.argv[1]
     if len(sys.argv) >= 3:
         password = sys.argv[2]
     if len(sys.argv) >= 4:
-        dirpath = sys.argv[3]
+        boardName = sys.argv[3]
     if len(sys.argv) >= 5:
-        boardName = sys.argv[4]
+        dirpath = sys.argv[4]
     if not account or not password:
         print(u'未设定账密')
         return
@@ -49,6 +61,7 @@ def main():
             if not cookieMap or not cookieMap[account] :
                 print(u'未找到缓存Cookie')
             else:
+                print(u'找到缓存Cookie，正在验证...')
                 cookie = cookieMap[account]
                 testResult = testCookie(cookie)
                 if (testResult):
