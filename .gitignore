@@ -3,3 +3,7 @@
 *.pyc
 /build/
 /.idea/
+/main.spec
+/main.exe
+/build
+/dist

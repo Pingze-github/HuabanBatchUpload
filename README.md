@@ -7,17 +7,18 @@
 + 自动传输错误重试
 + 自动图片处理，避免因“图片已经采集超过5次”而上传失败
 
+## 获取windows可执行版方法
+[github-release](https://github.com/Pingze-github/HuabanBatchUpload/releases)
+
 ## 使用方法 1
-1. 下载代码到本地
-2. 在dist目录中打开命令窗口
-3. 执行命令：```main.exe 账号 密码 画板名 图片目录路径```
+在命令行中执行：`main.exe "账号" "密码" "画板名" "图片目录绝对路径"`
 
 ## 使用方法 2
-1. 下载代码到本地
-2. 双击打开 /dist/main.exe，按提示操作即可。
+双击打开 main.exe，按提示操作
 
 ## 更新
 + 2018.4.18
 更改Python版本为Python3
 修复中文名文件上传失败问题
+更改打包方法
 
