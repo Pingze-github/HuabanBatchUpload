@@ -3,8 +3,8 @@
 # project: HuabanBatchUpload
 # author: Pingze-github @ Github
 
-from lib import *
-from upload import upload,setCookies,getUser
+from .lib import *
+from .upload import upload,setCookies,getUser
 import threading
 
 total = 0
@@ -47,7 +47,7 @@ def uploadOne(tname,lock,args):
 
 def batchUpload(cookie,dirpath,board_name):
     global total
-    dirpath = unicode(dirpath)
+    dirpath = dirpath
     setCookies(cookie)
     user = getUser()
     board_titles = []

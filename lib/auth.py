@@ -3,7 +3,7 @@
 # project: HuabanBatchUpload
 # author: Pingze-github @ Github
 
-from lib import *
+from .lib import *
 import os
 
 def getCookie(account,password):

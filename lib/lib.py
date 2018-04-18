@@ -7,7 +7,7 @@ import os
 import requests
 import json
 import re
-from Queue import Queue
+from queue import Queue
 
 def getDirectFiles(path):
     # get direct files in certain dir
@@ -81,7 +81,7 @@ def get(url,params="",cookies="",headers="",timeout=3,max_try=5):
     return requests.get(url, params=params, cookies=cookies, headers=headers, timeout=timeout)
 
 
-def post(url,data="",files="",cookies="",headers="",timeout=3,max_try=5):
+def post(url,data="",files="",cookies="",headers="",max_try=5):
     # POST with timeout & retry
     while(max_try-1>0):
         try:
@@ -98,8 +98,9 @@ def getHeaders():
     return {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
 
 def decode(str):
-    try :
-        uni = str.decode('utf-8')
-    except:
-        uni = str.decode('gbk')
-    return uni
+    # try :
+    #     uni = str.decode('utf-8')
+    # except:
+    #     uni = str.decode('gbk')
+    # return uni
+    return str

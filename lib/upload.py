@@ -4,9 +4,8 @@
 # author: Pingze-github @ Github
 
 import time
-from lib import *
-import recreateImg
-
+from .lib import *
+from .recreateImg import recreate
 # global variable
 cookies = {}
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
@@ -27,17 +26,17 @@ def printWithLock(string,lock):
 
 def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     # upload single file
-    if (type(board_title)!=unicode):
-        board_title = unicode(board_title,"u8")
+    board_title = board_title
     filename = os.path.basename(filepath)
     pinname = pinname if pinname else filename
 
     url = "http://huaban.com/upload/"
     image = open(os.path.abspath(filepath), 'rb')
     files = [
-        ('file', (filename, image, 'image/png'))
+        # 此处空置tuple的首个属性（原本为文件名，中文文件名报错）
+        ('file', ('', image, 'image/png'))
     ]
-    res = post(url, files=files, cookies=cookies, headers=headers) # 上传图片到花瓣服务器
+    res = post(url, files=files, cookies=cookies, headers=headers)
     file_data = json_parse(res.text)
     if file_data.get('err') == 500:
         printWithLock(u'[{}] 上传失败: "{}" 未知原因'.format(time.asctime()[11:19], filename), lock)
@@ -69,10 +68,9 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
     res = post(url, data=data, cookies=cookies, headers=headers) # 添加图片文件到画板
     if('<i class="error">' in res.text):
         printWithLock(u'[{}] 上传失败: 图片 "{}" 已经被采集超过5次，准备处理图片后重试...'.format(time.asctime()[11:19], filename), lock);
-        recreateImg.recreate(filepath)
+        recreate(filepath)
         return upload(filepath, board_title, pinname, lock, tname)
     elif json_parse(res.text)!=None:
-        data = json_parse(res.text)
         printWithLock (u'[{}] 上传成功: 图片 "{}" 到画板 "{}"'.format(time.asctime()[11:19], filename, board_title), lock);
         return True
     else:

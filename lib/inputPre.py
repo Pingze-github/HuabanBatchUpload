@@ -1,12 +1,8 @@
 # coding=u8
 
 def inputAutoDecode() :
-    str = raw_input()
-    try :
-        uni = str.decode('utf-8')
-    except:
-        uni = str.decode('gbk')
-    return uni
+    str = input()
+    return str
 
 def get(paramList) :
     paramValMap = {}
