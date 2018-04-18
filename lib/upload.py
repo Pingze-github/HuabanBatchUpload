@@ -31,14 +31,18 @@ def upload(filepath, board_title, pinname=None, lock=None, tname=None):
         board_title = unicode(board_title,"u8")
     filename = os.path.basename(filepath)
     pinname = pinname if pinname else filename
+
     url = "http://huaban.com/upload/"
-    image = open(filepath, 'rb')
-    files = {
-        'Content-Disposition: form-data; name="title"':''
-        ,'Content-Disposition: form-data; name="upload1"; filename="'+filename+'" Content-Type: image/jpeg':image
-    }
+    image = open(os.path.abspath(filepath), 'rb')
+    files = [
+        ('file', (filename, image, 'image/png'))
+    ]
     res = post(url, files=files, cookies=cookies, headers=headers) # 上传图片到花瓣服务器
     file_data = json_parse(res.text)
+    if file_data.get('err') == 500:
+        printWithLock(u'[{}] 上传失败: "{}" 未知原因'.format(time.asctime()[11:19], filename), lock)
+        printWithLock(u'服务器返回:' + res.text, lock)
+        return False
     if not file_data:
         printWithLock(u'[{}] 上传失败: "{}" 上传请求未返回id'.format(time.asctime()[11:19], filename), lock)
         printWithLock(u'返回了 "{}" '.format(res.text), lock)

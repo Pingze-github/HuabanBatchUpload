@@ -61,7 +61,7 @@ def main():
     if os.path.exists(cookieJsonPath) and os.path.isfile(cookieJsonPath):
         with open(cookieJsonPath, 'r') as f:
             cookieMap = json_parse(f.read())
-            if not cookieMap or not cookieMap[account] :
+            if not cookieMap or not cookieMap.get(account) :
                 print(u'未找到缓存Cookie')
             else:
                 print(u'找到缓存Cookie，正在验证...')
