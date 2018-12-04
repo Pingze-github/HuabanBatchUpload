@@ -21,7 +21,7 @@ def getDirectFiles(path):
             break
         for filename in files:
             ext = os.path.splitext(filename)
-            if not ext[1] or not ext[1][1:] in ['jpg','png','bmp','jpeg','gif']:
+            if not ext[1].lower() or not ext[1][1:].lower() in ['jpg','png','bmp','jpeg','gif']:
                 print(u'不支持的文件格式 ' + filename + u' 跳过...')
                 continue
             file_list.append(root + '/' + filename)
