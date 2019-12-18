@@ -1,4 +1,4 @@
-# coding=u8
+# coding=utf-8
 # main.py
 # project: HuabanBatchUpload
 # author: Pingze-github @ Github
@@ -11,20 +11,32 @@ from lib.auth import testCookie
 from lib.lib import json_parse, json_stringify, decode
 import lib.inputPre as inputPre
 
-
 # TODO 处理图片来避免因过多采集而上传失败
 
+
 def main():
-    account = '' # 账户名
-    password = '' # 密码
-    boardName = '' # 要上传到的画板名
-    dirpath = '' # 要上传的图片所在目录
+    account = ''  # 账户名
+    password = ''  # 密码
+    boardName = ''  # 要上传到的画板名
+    dirpath = ''  # 要上传的图片所在目录
     if len(sys.argv) < 2:
         paramMap = inputPre.get([
-            {'key': 'account', 'name': u'账户名'},
-            {'key': 'password', 'name': u'账户密码'},
-            {'key': 'boardname', 'name': u'画板名'},
-            {'key': 'dirpath', 'name': u'图片文件目录路径'},
+            {
+                'key': 'account',
+                'name': u'账户名'
+            },
+            {
+                'key': 'password',
+                'name': u'账户密码'
+            },
+            {
+                'key': 'boardname',
+                'name': u'画板名'
+            },
+            {
+                'key': 'dirpath',
+                'name': u'图片文件目录路径'
+            },
         ])
         account = paramMap['account']
         password = paramMap['password']
@@ -48,20 +60,21 @@ def main():
         print(u'未设定图片目录路径')
         return
     if not (os.path.exists(dirpath) and os.path.isdir(dirpath)):
-        print(u'设定图片目录路径'+ dirpath + u'无效')
+        print(u'设定图片目录路径' + dirpath + u'无效')
         return
     dirpath = os.path.normpath(dirpath)
     if not boardName:
         print(u'未设定画板名')
         return
         # boardName = dirpath[dirpath.rfind('\\') + 1:]  # 默认取文件夹名
-    print(u'你的设置: 账号: {}, 密码: {}, 图片目录路径: {}, 画板名: {}'.format(account, password, dirpath, boardName))
+    print(u'你的设置: 账号: {}, 密码: {}, 图片目录路径: {}, 画板名: {}'.format(
+        account, password, dirpath, boardName))
     cookie = None
     cookieJsonPath = './cookie.json'
     if os.path.exists(cookieJsonPath) and os.path.isfile(cookieJsonPath):
         with open(cookieJsonPath, 'r') as f:
             cookieMap = json_parse(f.read())
-            if not cookieMap or not cookieMap.get(account) :
+            if not cookieMap or not cookieMap.get(account):
                 print(u'未找到缓存Cookie')
             else:
                 print(u'找到缓存Cookie，正在验证...')
@@ -74,7 +87,7 @@ def main():
 
     if not cookie:
         print(u'使用账密登录...')
-        cookie = getCookie(account,password)
+        cookie = getCookie(account, password)
         if not cookie:
             return
         print(u'账密登录成功，获取到Cookie:')
@@ -87,6 +100,7 @@ def main():
             print(u'缓存Cookie成功')
 
     batchUpload(cookie, dirpath, boardName)
+
 
 if __name__ == '__main__':
     main()
