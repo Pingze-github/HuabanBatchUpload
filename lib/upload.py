@@ -105,24 +105,34 @@ def getUser():
     res = get(url, cookies=cookies, headers=headers)  # 获取主页
     req_json = ssearch('app\["req"\] = ({.+?});', res.text)
 
-    # print (u"成功读取用户主页信息")
     if req_json:
+        print(u"成功读取用户主页信息")
         req = json_parse(req_json)
         if req["user"] == "null":
             print(u"未成功获取用户主页信息")
-            exit()
+            exit(1)
         req_user = req["user"]
         url = url + req_user["urlname"]
-        res = get(url, cookies=cookies, headers=headers)  # 获取画板页
+        # 获取画板页
+        res = get(url, cookies=cookies, headers=headers)
         user_json = ssearch('app.page\["user"\] = ({.+?});', res.text)
-        # print(u"成功读取用户画板信息")
         if user_json:
-            user = json_parse(user_json)
+            print(u"成功读取用户画板信息")
+
+            d = json.loads(user_json)
+
+            with open("user_json.txt", "w", encoding="utf-8") as f:
+                f.write(user_json)
+            user = json.loads(user_json)
+            print(u'解析成功')
+
             return user
         else:
-            return
+            print(u"未能成功读取用户画板信息")
+            exit(1)
     else:
-        return
+        print(u"未能成功读取用户画板信息")
+        exit(1)
 
 
 def main():
